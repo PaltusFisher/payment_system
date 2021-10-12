@@ -4,22 +4,22 @@
     <title>Login page</title>
 </head>
 <body>
-<div th:if="${param.error}">
-    Неправильные номер телефона или пароль
-</div>
-<div th:if="${param.logout}">
-    Вы вышли из системы
-</div>
+    <div th:if="${param.error}">
+        <p>Неправильные номер телефона или пароль</p>
+    </div>
+    <div th:if="${param.logout}">
+        <p>Вы вышли из системы</p>
+    </div>
 
-Страница входа
-<form th:action="@{/login}" method="post">
-    <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
-    <div><label> Номер телефона : <input type="text" name="username"/> </label></div>
-    <div><label> Пароль: <input type="password" name="password"/> </label></div>
-    <div><input type="submit" value="Войти"/></div>
-</form>
-<form action="/registration">
-    <input type="submit" value="Регистрация" />
-</form>
+    Страница входа
+    <form th:action="@{/login}" method="post">
+        <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+        <div><label> Номер телефона : <input type="text" name="username"/> </label></div>
+        <div><label> Пароль: <input type="password" name="password"/> </label></div>
+        <div><input type="submit" value="Войти"/></div>
+    </form>
+    <form action="/registration">
+        <input type="submit" value="Регистрация" />
+    </form>
 </body>
 </html>
