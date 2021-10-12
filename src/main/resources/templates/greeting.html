@@ -1,0 +1,58 @@
+<!DOCTYPE HTML>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Main page</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+
+<p th:text="'Добро пожаловать, ' + ${name} + '!!!'"/>
+<p th:text="'Счёт: ' + ${cash} + ' кредитов'"/>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="Sign Out"/>
+</form>
+
+<p>Выберите услугу для оплаты</p>
+<form method="post" action="payService">
+    <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+    <select name="nameService">
+        <option th:each="service : ${servicesName}" th:value="${service}" th:text="${service}"></option>
+    </select>
+    <button type="submit">Перейти к оплате</button>
+</form>
+
+<p>История платежей:</p>
+<form method="post" action="filterDate">
+    <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+    <input type="text" name="filterStartDateTextBox" placeholder="с"/>
+    <input type="text" name="filterEndDateTextBox" placeholder="до"/>
+    <button type="submit">Фильтр по дате</button>
+</form>
+<form method="post" action="filterService">
+    <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+    <select name="filterServiceDropdown">
+        <option th:each="service : ${servicesName}" th:value="${service}" th:text="${service}"></option>
+    </select>
+    <button type="submit">Фильтр по услуге</button>
+</form>
+<form method="post" action="filterPaySum">
+    <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+    <input type="text" name="filterPaySumTextBox" placeholder="Введите сумму"/>
+    <button type="submit">Фильтр по сумме оплаты</button>
+</form>
+
+<form action="/">
+    <input type="submit" value="Сбросить фильтры" />
+</form>
+<tr th:each="payment: ${payments}">
+    <p>
+    <td th:text="'Услуга: '+${payment.service.name}"/>
+    <td th:text="'Сумма платежа: '+${payment.paySum}"/>
+    <td th:text="'Номер оплаты: '+${payment.inputNumber}"/>
+    <td th:text="'Дата оплаты: '+${payment.localDate}"/>
+    </p>
+</tr>
+
+
+</body>
+</html>

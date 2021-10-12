@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form method="post" action="addPayment">
+        <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+        <p th:text="'Услуга: ' +${service}" />
+        <p th:text="'Минимальная сумма оплаты: ' +${minPay}" />
+        <p th:text="'Максимальная сумма оплаты: ' +${maxPay}" />
+        <p>Введите номер, на который производится оплата, и сумму платежа:</p>
+
+        <input type="text" name="inputNumber" placeholder="Номер" />
+        <input type="text" name="paySum" placeholder="Сумма" />
+        <input type="hidden" name="serviceName" th:value="${service}"  />
+        <button type="submit">Оплатить</button>
+    </form>
+</body>
+</html>
