@@ -38,7 +38,7 @@ public class User {
         this.password = password;
         this.cash = cash;
         this.active = active;
-        //////////////
+
 
     }
 
@@ -100,8 +100,7 @@ public class User {
 
     public void reduceCash(Integer pay_sum) {
         this.cash -= pay_sum;
-    }//////////////////////////////////////////////////////////////////////////////////////////////
-
+    }
     public Set<Payment> getPayments() {
         return payments;
     }

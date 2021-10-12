@@ -18,7 +18,6 @@ public class RegistrationController {
     RegistrationController(UserService userService) {
         this.userService = userService;
     }
-
     private final UserService userService;
 
     @GetMapping("/registration")
@@ -38,27 +37,22 @@ public class RegistrationController {
                         100,
                        true);
 
-        User userFromDB = userService.findByPhoneNumber(user.getPhoneNumber());
-        if (userFromDB != null) {
-            model.addAttribute("message", "Пользователь уже существует");
+
+        String message = userService.validateRegistrationData(user, email, phoneNumber);
+        if (message != null)
+        {
+            model.addAttribute("message", message);
             return "registration";
         }
-
-        if (StringUtils.isBlank(phoneNumber) || (StringUtils.isBlank(email))) {
-            model.addAttribute("message", "Введено пустое значение");
-            return "registration";
-        }
-
 
         user.setRoles(Collections.singleton(Role.USER));
-        userService.testUserAdd(user);
+        userService.userSave(user);
         model.addAttribute("password", password);
         return "show-password-page";
     }
 
     @GetMapping("/show-password-page")
-    public String showPasswordPage(Model model) {
-        //model.addAttribute("password", logged_user.getPhoneNumber());
+    public String showPasswordPage() {
         return "show-password-page";
     }
 }

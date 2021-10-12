@@ -2,7 +2,7 @@
 <html xmlns:th="http://thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Pay Page!!!</title>
 </head>
 <body>
     <form method="post" action="addPayment">
@@ -16,6 +16,10 @@
         <input type="text" name="paySum" placeholder="Сумма" />
         <input type="hidden" name="serviceName" th:value="${service}"  />
         <button type="submit">Оплатить</button>
+        <p th:text="${message}"/>
+    </form>
+    <form action="/">
+        <input type="submit" value="Вернться на главную" />
     </form>
 </body>
 </html>

@@ -28,12 +28,20 @@ public class PaymentService {
         return paymentRepository.findByLocalDateBetweenAndUser(startDate, endDate, user);
     }
 
-
-
-    ///////////
-    public void testPaymentAdd(Payment service2) {
-        paymentRepository.save(service2);
+    public String validatePayData(Integer paySum, User user, String inputNumber,
+                                  com.example.payment_system.entity.Service selectedService) {
+        if (paySum > user.getCash())
+            return "Введенная сумма превышает Ваш баланс";
+        if (paySum > selectedService.getMaxPay() || paySum < selectedService.getMinPay())
+            return "Введенная сумма не соответствует тарифу услуги";
+        if (inputNumber.length() > 40)
+            return "Введенный номер слишком длинный (40+ символов)";
+        return null;
     }
 
 
+
+    public void savePayment(Payment payment) {
+        paymentRepository.save(payment);
+    }
 }

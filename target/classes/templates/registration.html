@@ -4,20 +4,22 @@
   <title>Spring Security Example </title>
 </head>
 <body>
-<div th:if="${param.error}">
-  Invalid username and password.
-</div>
-<div th:if="${param.logout}">
-  You have been logged out.
-</div>
+  <div>
+    <div th:if="${param.error}">
+      Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+      You have been logged out.
+    </div>
 
-<p th:text="${message}"/>
-Страница регистрации
-<form th:action="@{/registration}" method="post">
-  <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
-  <div><label> Номер телефона : <input type="text" name="phoneNumber"/> </label></div>
-  <div><label> EMAIL: <input type="text" name="email"/> </label></div>
-  <div><input type="submit" value="Зарегистрироваться"/></div>
-</form>
+    <p th:text="${message}"/>
+    <p>Страница регистрации</p>
+    <form th:action="@{/registration}" method="post">
+      <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
+      <div><label> Номер телефона : <input type="text" name="phoneNumber"/> </label></div>
+      <div><label> EMAIL: <input type="text" name="email"/> </label></div>
+      <div><input type="submit" value="Зарегистрироваться"/></div>
+    </form>
+  </div>
 </body>
 </html>

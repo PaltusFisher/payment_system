@@ -29,9 +29,4 @@ public class ServiceService {
     }
 
 
-
-    ///////////
-    public void testServiceAdd(Service service2) {
-        serviceRepository.save(service2);
-    }
 }

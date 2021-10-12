@@ -1,9 +1,12 @@
 package com.example.payment_system.services;
 
+import com.example.payment_system.entity.Payment;
 import com.example.payment_system.entity.User;
 import com.example.payment_system.repository.UserRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.Random;
 
 @Service
@@ -11,7 +14,6 @@ public class UserService {
     UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
-
     private final UserRepository userRepository;
 
     public User findByPhoneNumber(String phoneNumber){
@@ -28,8 +30,21 @@ public class UserService {
         return sb.toString();
     }
 
-    ///////////
-    public void testUserAdd(User service2) {
-        userRepository.save(service2);
+    public String validateRegistrationData(User user, String email, String phoneNumber) {
+        User userFromDB = findByPhoneNumber(user.getPhoneNumber());
+        if (userFromDB != null) {
+            return "Пользователь уже существует";
+        }
+        if (StringUtils.isBlank(phoneNumber) || (StringUtils.isBlank(email))) {
+            return "Введено пустое значение";
+        }
+        if (phoneNumber.length() > 20 || email.length() > 50) {
+            return "Введенное значение превышает максимальную длину";
+        }
+        return null;
+    }
+
+    public void userSave(User user) {
+        userRepository.save(user);
     }
 }

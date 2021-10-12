@@ -12,8 +12,8 @@
     <input type="submit" value="Sign Out"/>
 </form>
 
-<p>Выберите услугу для оплаты</p>
-<form method="post" action="payService">
+<p>Выберите услугу для оплаты:</p>
+<form method="post" action="goToPayPage">
     <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
     <select name="nameService">
         <option th:each="service : ${servicesName}" th:value="${service}" th:text="${service}"></option>

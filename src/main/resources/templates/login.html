@@ -1,7 +1,12 @@
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://thymeleaf.org">
 <head>
-    <title>Login page</title>
+    <title>Login page!!!</title>
+    <style type="text/css">
+        .block {
+            width: 500px;
+        }
+    </style>
 </head>
 <body>
     <div th:if="${param.error}">
@@ -11,7 +16,7 @@
         <p>Вы вышли из системы</p>
     </div>
 
-    Страница входа
+    <p>Страница входа</p>
     <form th:action="@{/login}" method="post">
         <input type='hidden' th:value='${_csrf.token}' th:name='${_csrf.parameterName}'/>
         <div><label> Номер телефона : <input type="text" name="username"/> </label></div>
@@ -21,5 +26,10 @@
     <form action="/registration">
         <input type="submit" value="Регистрация" />
     </form>
+    <div class="block">
+        <p>Добрый день!</p>
+        <p>Упрощенное приложение позволяет авторизированному пользователю производить оплаты различных услуг
+            без возможности пополнения своего счета, а также просматривать и фильтровать список совершенных оплат.</p>
+    </div>
 </body>
 </html>

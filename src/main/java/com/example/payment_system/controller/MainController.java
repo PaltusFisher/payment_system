@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.security.Principal;
 import java.time.LocalDate;
 
+/**
+ * Контроллер для главной страницы и страницы оплаты услуги
+ */
 @Controller
 public class MainController {
     private static final Logger logger = LogManager.getLogger();
@@ -35,38 +38,61 @@ public class MainController {
     private final ServiceService serviceService;
     private final PaymentService paymentService;
 
+    /**
+     * Отображение основной информации о пользователе, списка услуг и истории совершенных оплат
+     */
     @GetMapping("/")
     public String greeting(Model model, Principal principal) {
 
-        User logged_user = userService.findByPhoneNumber(principal.getName());
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
 
-        model.addAttribute("name", logged_user.getPhoneNumber());
-        model.addAttribute("cash", logged_user.getCash());
+        model.addAttribute("name", loggedUser.getPhoneNumber());
+        model.addAttribute("cash", loggedUser.getCash());
         model.addAttribute("servicesName", serviceService.findAllNames());
-        model.addAttribute("payments", logged_user.getPayments());
+        model.addAttribute("payments", loggedUser.getPayments());
         return "greeting";
     }
 
-    @PostMapping("addPayment")////////////////////////////////////////////////////////
+    /**
+     * Оплата выбранной услуги
+     */
+    @PostMapping("addPayment")
     public String addPayment(@RequestParam String inputNumber,
                              @RequestParam Integer paySum,
                              @RequestParam String serviceName,
-                             Principal principal) {
+                             Principal principal,
+                             Model model) {
 
-        User logged_user = userService.findByPhoneNumber(principal.getName());
-        logged_user.reduceCash(paySum);
-
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
         Service selectedService = serviceService.findByName(serviceName);
-        Payment payment = new Payment(paySum, inputNumber, LocalDate.now(), logged_user, selectedService);
-        paymentService.testPaymentAdd(payment);
+
+        String message = paymentService.validatePayData(paySum, loggedUser, inputNumber, selectedService);
+        if (message != null)
+        {
+            model.addAttribute("maxPay", serviceService.findByName(serviceName).getMaxPay());
+            model.addAttribute("minPay", serviceService.findByName(serviceName).getMinPay());
+            model.addAttribute("service", serviceName);
+            model.addAttribute("message", message);
+            return "/pay-page";
+        }
+
+        loggedUser.reduceCash(paySum);
+
+
+        Payment payment = new Payment(paySum, inputNumber, LocalDate.now(), loggedUser, selectedService);
+        paymentService.savePayment(payment);
 
         selectedService.addPayment(payment);
-        logged_user.addPayment(payment);
+        loggedUser.addPayment(payment);
+
 
         return "success-pay-page";
     }
 
-    @PostMapping("payService")
+    /**
+     * Переход на страницу оплаты выбранной услуги
+     */
+    @PostMapping("goToPayPage")
     public String goToPayPage(@RequestParam String nameService,
                               Model model) {
 
@@ -77,46 +103,57 @@ public class MainController {
         return "pay-page";
     }
 
+    /**
+     * Фильтр списка оплат услуг по сумме оплаты
+     */
     @PostMapping("filterPaySum")
     public String filterPaySum(@RequestParam Integer filterPaySumTextBox,
                                Principal principal,
                                Model model) {
-        User logged_user = userService.findByPhoneNumber(principal.getName());
-        model.addAttribute("name", logged_user.getPhoneNumber());
-        model.addAttribute("cash", logged_user.getCash());
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
+        model.addAttribute("name", loggedUser.getPhoneNumber());
+        model.addAttribute("cash", loggedUser.getCash());
         model.addAttribute("servicesName", serviceService.findAllNames());
-        model.addAttribute("payments", paymentService.findByPaySumAndUser(filterPaySumTextBox, logged_user));
+        model.addAttribute("payments", paymentService.findByPaySumAndUser(filterPaySumTextBox, loggedUser));
 
         return "greeting";
     }
 
+    /**
+     * Фильтр списка оплат услуг по наименованию услуги
+     */
     @PostMapping("filterService")
     public String filterService(@RequestParam String filterServiceDropdown,
                                 Principal principal,
                                 Model model) {
-        User logged_user = userService.findByPhoneNumber(principal.getName());
-        model.addAttribute("name", logged_user.getPhoneNumber());
-        model.addAttribute("cash", logged_user.getCash());
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
+        model.addAttribute("name", loggedUser.getPhoneNumber());
+        model.addAttribute("cash", loggedUser.getCash());
         model.addAttribute("servicesName", serviceService.findAllNames());
-        model.addAttribute("payments", paymentService.findByServiceAndUser(serviceService.findByName(filterServiceDropdown), logged_user));
+        model.addAttribute("payments",
+                paymentService.findByServiceAndUser(serviceService.findByName(filterServiceDropdown), loggedUser));
 
         return "greeting";
     }
 
+    /**
+     * Фильтр списка оплат услуг по дате (с-до)
+     */
     @PostMapping("filterDate")
     public String filterDate(@RequestParam String filterStartDateTextBox,
                              @RequestParam String filterEndDateTextBox,
                              Principal principal,
                              Model model) {
-        User logged_user = userService.findByPhoneNumber(principal.getName());
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
 
         LocalDate startDate = LocalDate.parse(filterStartDateTextBox);
         LocalDate endDate = LocalDate.parse(filterEndDateTextBox);
 
-        model.addAttribute("name", logged_user.getPhoneNumber());
-        model.addAttribute("cash", logged_user.getCash());
+        model.addAttribute("name", loggedUser.getPhoneNumber());
+        model.addAttribute("cash", loggedUser.getCash());
         model.addAttribute("servicesName", serviceService.findAllNames());
-        model.addAttribute("payments", paymentService.findByLocalDateBetweenAndUser(startDate, endDate, logged_user));
+        model.addAttribute("payments",
+                paymentService.findByLocalDateBetweenAndUser(startDate, endDate, loggedUser));
 
         return "greeting";
     }
