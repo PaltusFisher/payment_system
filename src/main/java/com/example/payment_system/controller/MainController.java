@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import java.security.Principal;
 import java.time.LocalDate;
 
@@ -65,8 +67,10 @@ public class MainController {
                              Principal principal,
                              Model model) {
 
-        User loggedUser = userService.findByPhoneNumber(principal.getName());
         Service selectedService = serviceService.findByName(serviceName);
+        User loggedUser = userService.findByPhoneNumber(principal.getName());
+        //todo
+        userService.getEm().lock(loggedUser, LockModeType.PESSIMISTIC_WRITE);
 
         String message = paymentService.validatePayData(paySum, loggedUser, inputNumber, selectedService);
         if (message != null)

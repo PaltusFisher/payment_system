@@ -6,6 +6,7 @@ import com.example.payment_system.repository.UserRepository;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
 import java.time.LocalDate;
 import java.util.Random;
 
@@ -18,6 +19,16 @@ public class UserService {
 
     public User findByPhoneNumber(String phoneNumber){
         return userRepository.findByPhoneNumber(phoneNumber);
+    }
+
+    private EntityManager em;
+
+    public EntityManager getEm() {
+        return em;
+    }
+
+    public void setEm(EntityManager em) {
+        this.em = em;
     }
 
     public String generateRandomPassword(int len) {
