@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import java.security.Principal;
 import java.time.LocalDate;
@@ -31,7 +30,6 @@ public class MainController {
     MainController(UserService userService,
                    ServiceService serviceService,
                    PaymentService paymentService) {
-
         this.userService = userService;
         this.serviceService = serviceService;
         this.paymentService = paymentService;
@@ -59,6 +57,7 @@ public class MainController {
     /**
      * Оплата выбранной услуги
      */
+    //private EntityManager em;
     @Transactional
     @PostMapping("addPayment")
     public String addPayment(@RequestParam String inputNumber,
@@ -73,8 +72,7 @@ public class MainController {
         userService.getEm().lock(loggedUser, LockModeType.PESSIMISTIC_WRITE);
 
         String message = paymentService.validatePayData(paySum, loggedUser, inputNumber, selectedService);
-        if (message != null)
-        {
+        if (message != null) {
             model.addAttribute("maxPay", serviceService.findByName(serviceName).getMaxPay());
             model.addAttribute("minPay", serviceService.findByName(serviceName).getMinPay());
             model.addAttribute("service", serviceName);
